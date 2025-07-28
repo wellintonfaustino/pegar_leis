@@ -1,40 +1,40 @@
-# Usa imagem oficial do Node.js
 FROM node:20
 
-# Define diretório de trabalho dentro do container
+# Define diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos do projeto
-COPY package*.json ./
-COPY index.js ./
-
-# Instala dependências
-RUN npm install
-
-# Garante que o Chromium funcione com Puppeteer
+# Instala dependências do sistema necessárias para rodar o Chromium
 RUN apt-get update && apt-get install -y \
-    wget \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libgdk-pixbuf2.0-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+  wget \
+  ca-certificates \
+  fonts-liberation \
+  libappindicator3-1 \
+  libasound2 \
+  libatk-bridge2.0-0 \
+  libatk1.0-0 \
+  libcups2 \
+  libdbus-1-3 \
+  libgdk-pixbuf2.0-0 \
+  libnspr4 \
+  libnss3 \
+  libx11-xcb1 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxrandr2 \
+  libgbm1 \
+  libxshmfence1 \
+  libglu1-mesa \
+  xdg-utils \
+  --no-install-recommends && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
-# Expõe a porta do servidor
+# Copia os arquivos
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+# Expor porta da aplicação
 EXPOSE 3000
 
-# Comando para iniciar a aplicação
-CMD [ "node", "index.js" ]
+CMD ["node", "index.js"]
